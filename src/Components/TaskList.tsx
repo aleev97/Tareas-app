@@ -9,7 +9,8 @@ interface TaskListProps {
 }
 
 const TaskList: React.FC<TaskListProps> = ({ onEdit }) => {
-    const tasks = useSelector((state: RootState) => state.tasks.tasks);
+  const tasks = useSelector((state: RootState) => state.tasks.tasks);
+
     const dispatch = useDispatch();
 
     const handleDelete = (id: string) => {
@@ -17,17 +18,12 @@ const TaskList: React.FC<TaskListProps> = ({ onEdit }) => {
     };
 
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {tasks.map((task) => (
-           <TaskCard
-             key={task.id}
-             task={task}
-             onEdit={() => onEdit(task.id)}
-             onDelete={() => handleDelete(task.id)}
-           />  
-        ))}
+      <div>
+          {tasks.map((task) => (
+              <TaskCard key={task.id} task={task} onEdit={() => onEdit(task.id)} onDelete={() => handleDelete(task.id)} />
+          ))}
       </div>
-    );
+  );
 };
 
 export default TaskList;
