@@ -1,8 +1,21 @@
 /** @type {import('tailwindcss').Config} */
-export default {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+module.exports = {
+  content: [
+    "./src/**/*.{html,js,jsx,ts,tsx}", // Asegúrate de que cubra las rutas correctas donde usas Tailwind
+  ],
   theme: {
-    extend: {},
+    extend: {
+      animation: {
+        trash: 'trash-close 0.5s ease-in-out',
+      },
+      keyframes: {
+        'trash-close': {
+          '0%': { transform: 'scaleY(1)' },
+          '50%': { transform: 'scaleY(0.8)' },
+          '100%': { transform: 'scaleY(1)' },
+        },
+      },
+    },
   },
   plugins: [],
 }
