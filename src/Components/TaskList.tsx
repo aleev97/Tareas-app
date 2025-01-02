@@ -18,12 +18,17 @@ const TaskList: React.FC<TaskListProps> = ({ onEdit }) => {
     };
 
     return (
-      <div>
-          {tasks.map((task) => (
-              <TaskCard key={task.id} task={task} onEdit={() => onEdit(task.id)} onDelete={() => handleDelete(task.id)} />
-          ))}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {tasks.map((task) => (
+          <TaskCard
+            key={task.id} // Asegúrate de que cada tarea tenga un key único
+            task={task}
+            onEdit={() => onEdit(task.id)}
+            onDelete={() => handleDelete(task.id)}
+          />
+        ))}
       </div>
-  );
+    );
 };
 
 export default TaskList;

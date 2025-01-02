@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addTask } from "../Features/tasks/tasksSlice";
+import { addTask, editTask } from "../Features/tasks/tasksSlice";
 import { v4 as uuidv4 } from 'uuid';
 
 export interface TaskEditProps {
@@ -28,19 +28,27 @@ const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave }) => {
 
   const handleSave = () => {
     const task = {
-        id: taskToEdit?.id || uuidv4(),
-        content,
-        color,
-        font,
-        textColor,
-        style,
-        image,
-        completed: false,
+      id: taskToEdit?.id || uuidv4(), // Mantener el mismo ID si estamos editando
+      content,
+      color,
+      font,
+      textColor,
+      style,
+      image,
+      completed: false,
     };
-    dispatch(addTask(task));
-    onSave();
-};
-
+  
+    if (taskToEdit) {
+      // Editar la tarea existente
+      dispatch(editTask(task));
+    } else {
+      // Crear una nueva tarea
+      dispatch(addTask(task));
+    }
+  
+    onSave(); // Cerrar el editor o realizar otra acción
+  };
+  
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const reader = new FileReader();

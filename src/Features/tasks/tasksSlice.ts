@@ -16,7 +16,7 @@ interface TasksState {
 }
 
 const initialState: TasksState = {
-  tasks: [], // Lista inicial de tareas
+  tasks: JSON.parse(localStorage.getItem('tasks') || '[]'),
 };
 
 const tasksSlice = createSlice({
@@ -26,13 +26,17 @@ const tasksSlice = createSlice({
     addTask: (state, action: PayloadAction<Task>) => {
       console.log("Agregando tarea:", action.payload); // Depuración
       state.tasks.push(action.payload);
+      localStorage.setItem('tasks', JSON.stringify(state.tasks));
     },
     editTask: (state, action: PayloadAction<Task>) => {
       const index = state.tasks.findIndex((task) => task.id === action.payload.id);
       if (index !== -1) {
         state.tasks[index] = action.payload;
+      } else {
+        state.tasks.push(action.payload);
       }
-    },
+      localStorage.setItem("tasks", JSON.stringify(state.tasks));
+    },    
     deleteTask: (state, action: PayloadAction<string>) => {
       state.tasks = state.tasks.filter((task) => task.id !== action.payload);
     },
