@@ -26,6 +26,8 @@ const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave }) => {
     image: taskToEdit?.image || undefined,
   });
 
+  const [imagePreview, setImagePreview] = useState<string | null>(null); // Nuevo estado para la vista previa de la imagen
+
   const dispatch = useDispatch();
 
   const handleChange = (key: string, value: string | undefined) => {
@@ -55,11 +57,15 @@ const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave }) => {
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
       const reader = new FileReader();
+      
+      // Mostrar la vista previa de la imagen
       reader.onload = () => {
-        handleChange("image", reader.result as string);
+        setImagePreview(reader.result as string); // Guardamos la URL temporal de la imagen
+        handleChange("image", reader.result as string); // Guardamos la imagen en el estado de la tarea
       };
-      reader.readAsDataURL(e.target.files[0]);
+      reader.readAsDataURL(file);
     }
   };
 
@@ -97,8 +103,22 @@ const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave }) => {
           <option value="common">Nota común</option>
           <option value="chalkboard">Pizarrón</option>
         </select>
+
+        {/* Campo para seleccionar la imagen */}
         <input type="file" accept="image/*" onChange={handleImageUpload} />
+        
+        {/* Vista previa de la imagen */}
+        {imagePreview && (
+          <div className="mt-4">
+            <img
+              src={imagePreview}
+              alt="Vista previa"
+              className="w-32 h-32 object-contain" // Cambié el tamaño a 128x128 px
+            />
+          </div>
+        )}
       </div>
+      
       <button onClick={handleSave} className="mt-4 p-2 bg-blue-500 text-white rounded">
         Guardar
       </button>

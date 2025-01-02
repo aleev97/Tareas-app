@@ -48,8 +48,11 @@ const tasksSlice = createSlice({
       } 
       localStorage.setItem('tasks', JSON.stringify(state.tasks));
     },
+    deleteCompletedTasks: (state) => {
+      state.tasks = state.tasks.filter(task => !task.completed);
+    },
   },
 });
 
-export const { addTask, editTask, deleteTask, toggleCompleted } = tasksSlice.actions;
+export const { addTask, editTask, deleteTask, toggleCompleted, deleteCompletedTasks } = tasksSlice.actions;
 export default tasksSlice.reducer;

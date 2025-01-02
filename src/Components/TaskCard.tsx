@@ -9,6 +9,7 @@ interface TaskCardProps {
     font: string;
     content: string;
     completed: boolean;
+    image?: string;  // Agregar este campo para la imagen
   };
   onEdit: () => void;
   onDelete: () => void;
@@ -25,6 +26,9 @@ const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onDelete, 
       exit={{ scale: 0 }}
       transition={{ duration: 0.3 }}
     >
+      {/* Mostrar la imagen si está disponible */}
+      {task.image && <img src={task.image} alt="Tarea imagen" className="w-full h-auto mb-2" />}
+
       <p style={{ color: task.textColor, fontFamily: task.font }}>{task.content}</p>
       <button onClick={onEdit}>Editar</button>
       <button onClick={onDelete}>Eliminar</button>
