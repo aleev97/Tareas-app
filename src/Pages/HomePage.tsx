@@ -1,18 +1,27 @@
-import React, { useState } from 'react';
-import TaskList from '../Components/TaskList';
-import TaskEditor from '../Components/TaskEditor';
+import React, { useState } from "react";
+import { TaskList } from "../Components/TaskList";
+import TaskEditor from "../Components/TaskEditor";
 
 const HomePage: React.FC = () => {
-  const [editingTask, setEditingTask] = useState<{ id: string; content: string; color: string; font: string; textColor: string; image?: string; style?: "common" | "chalkboard" } | null>(null);
+  const [editingTask, setEditingTask] = useState<{
+    id: string;
+    content: string;
+    color: string;
+    font: string;
+    textColor: string;
+    image?: string;
+    style?: "common" | "chalkboard";
+  } | null>(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
+  const [filter, setFilter] = useState<"all" | "completed" | "pending">("all");
 
   const handleEdit = (taskId: string) => {
     const taskToEdit = {
       id: taskId,
-      content: "Contenido de ejemplo",
-      color: "blue",
-      font: "Arial",
-      textColor: "white",
+      content: "",
+      color: "",
+      font: "",
+      textColor: "",
     };
     setEditingTask(taskToEdit);
     setIsEditorOpen(true);
@@ -21,6 +30,10 @@ const HomePage: React.FC = () => {
   const handleCloseEditor = () => {
     setEditingTask(null);
     setIsEditorOpen(false);
+  };
+
+  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFilter(e.target.value as "all" | "completed" | "pending");
   };
 
   return (
@@ -32,8 +45,23 @@ const HomePage: React.FC = () => {
       >
         Crear nueva tarea
       </button>
-      <TaskList onEdit={handleEdit} />
-      {isEditorOpen && (<TaskEditor taskToEdit={editingTask || { id: '', content: '', color: '', font: '', textColor: '' }} onSave={handleCloseEditor} />
+      <div className="mb-4">
+        <select
+          value={filter}
+          onChange={handleFilterChange}
+          className="p-2 border rounded"
+        >
+          <option value="all">Todas</option>
+          <option value="completed">Completadas</option>
+          <option value="pending">Pendientes</option>
+        </select>
+      </div>
+      <TaskList onEdit={handleEdit} filter={filter} />
+      {isEditorOpen && (
+        <TaskEditor
+          taskToEdit={editingTask || { id: "", content: "", color: "", font: "", textColor: "" }}
+          onSave={handleCloseEditor}
+        />
       )}
     </div>
   );

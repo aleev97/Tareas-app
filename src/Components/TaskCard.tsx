@@ -1,37 +1,44 @@
 import React from "react";
-import { Task } from '../Features/tasks/tasksSlice';
+import { motion } from "framer-motion";
 
-export interface TaskCardProps {
-    task: Task;
-    onEdit: (id: string) => void;
-    onDelete: (id: string) => void;
-    onToggleCompleted: (id: string) => void;
+interface TaskCardProps {
+  task: {
+    id: string;
+    color: string;
+    textColor: string;
+    font: string;
+    content: string;
+    completed: boolean;
+  };
+  onEdit: () => void;
+  onDelete: () => void;
+  onToggleCompleted: (id: string) => void;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onDelete, onToggleCompleted }) => {
+const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onDelete, onToggleCompleted }) => {
   return (
-    <div
+    <motion.div
+      className="p-4 border rounded"
       style={{ backgroundColor: task.color }}
-      className={`p-4 border rounded ${task.completed ? 'line-through' : ''}`}
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      exit={{ scale: 0 }}
+      transition={{ duration: 0.3 }}
     >
       <p style={{ color: task.textColor, fontFamily: task.font }}>{task.content}</p>
-      <div className="flex justify-between items-center">
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            checked={task.completed}
-            onChange={() => onToggleCompleted(task.id)}
-            className="mr-2"
-          />
-          <label>{task.completed ? "Completada" : "No completada"}</label>
-        </div>
-        <div>
-          <button onClick={() => onEdit(task.id)} className="mr-2">Editar</button>
-          <button onClick={() => onDelete(task.id)} className="mr-2">Eliminar</button>
-        </div>
-      </div>
-    </div>
+      <button onClick={onEdit}>Editar</button>
+      <button onClick={onDelete}>Eliminar</button>
+      <label className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          checked={task.completed}
+          onChange={() => onToggleCompleted(task.id)}
+          className="form-checkbox h-5 w-5 text-blue-500 rounded focus:ring focus:ring-blue-300"
+        />
+        {task.completed ? "Tarea completada" : "Tarea pendiente"}
+      </label>
+    </motion.div>
   );
-};
+});
 
 export default TaskCard;
