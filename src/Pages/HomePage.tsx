@@ -85,6 +85,7 @@ const HomePage: React.FC = () => {
         <TaskEditor
           taskToEdit={editingTask || { id: "", content: "", color: "", font: "", textColor: "" }}
           onSave={handleCloseEditor}
+          onCancel={handleCloseEditor}  // Prop para cancelar
         />
       )}
     </div>
