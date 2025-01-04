@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TaskList } from "../Components/TaskList";
 import TaskEditor from "../Components/TaskEditor";
-import NoteCanvas from "../Components/NoteCanvas"; // Asegúrate de importar el componente NoteCanvas
+import NoteCanvas from "../Components/NoteCanvas";
 
 const HomePage: React.FC = () => {
   const [editingTask, setEditingTask] = useState<{
@@ -15,7 +15,7 @@ const HomePage: React.FC = () => {
   } | null>(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [filter, setFilter] = useState<"all" | "completed" | "pending">("all");
-  const [showCanvas, setShowCanvas] = useState(false); // Estado para controlar el lienzo
+  const [showCanvas, setShowCanvas] = useState(false);
 
   const handleEdit = (taskId: string) => {
     const taskToEdit = {
@@ -81,12 +81,18 @@ const HomePage: React.FC = () => {
         </select>
       </div>
       <TaskList onEdit={handleEdit} filter={filter} />
+      
       {isEditorOpen && (
-        <TaskEditor
-          taskToEdit={editingTask || { id: "", content: "", color: "", font: "", textColor: "" }}
-          onSave={handleCloseEditor}
-          onCancel={handleCloseEditor}  // Prop para cancelar
-        />
+        // Modal container with overlay background
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl">
+            <TaskEditor
+              taskToEdit={editingTask || { id: "", content: "", color: "", font: "", textColor: "" }}
+              onSave={handleCloseEditor}
+              onCancel={handleCloseEditor} // Prop to cancel
+            />
+          </div>
+        </div>
       )}
     </div>
   );

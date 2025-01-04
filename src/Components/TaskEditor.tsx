@@ -159,7 +159,6 @@ const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCancel }) =
           className="w-6 h-6 border-none rounded-full transition duration-300"
           onChange={(e) => handleChange("textColor", e.target.value)}
         />
-
         <label className="text-l font-semibold text-gray-800">Estilo:</label>
         <select
           value={task.style}
@@ -172,7 +171,6 @@ const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCancel }) =
           <option value="stripes">Rayas</option>
           <option value="folded">Arrugado</option>
         </select>
-
         <label className="text-l font-semibold text-gray-800">Imagen (opcional):</label>
         <input type="file" accept="image/*" onChange={handleImageUpload} />
         {imagePreview && (
@@ -185,7 +183,6 @@ const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCancel }) =
           </div>
         )}
       </div>
-
       <div className="mt-4 flex justify-between">
         <button
           onClick={handleSave}
