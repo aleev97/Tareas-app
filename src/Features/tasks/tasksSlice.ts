@@ -7,6 +7,7 @@ export interface Task {
   font: string;
   textColor: string;
   image?: string;
+  createdAt: string;
   style: "common" | "chalkboard" | "grid" | "stripes" | "folded";
   completed: boolean;
 }
