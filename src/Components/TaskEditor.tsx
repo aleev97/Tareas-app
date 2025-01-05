@@ -11,10 +11,10 @@ export interface TaskEditProps {
     font: string;
     textColor: string;
     image?: string;
-    style?: "common" | "chalkboard" | "grid" | "stripes" | "folded";
+    style?: "common" | "grid" | "stripes" | "folded";
   } | null;
   onSave: () => void;
-  onCancel: () => void;  // Agregado para manejar la cancelación
+  onCancel: () => void;
 }
 
 const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCancel }) => {
@@ -88,23 +88,16 @@ const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCancel }) =
           backgroundSize: "cover",
           color: task.textColor,
         };
-      case "chalkboard":
-        return {
-          backgroundColor: "#333",
-          fontFamily: "Chalkduster, Comic Sans MS, cursive",
-          color: task.textColor,
-        };
       default:
         return task.image
           ? {
-              backgroundColor: task.color,
-              color: task.textColor,
-            }
+            backgroundColor: task.color,
+            color: task.textColor,
+          }
           : { backgroundColor: task.color, color: task.textColor };
     }
   };
 
-  // Función para manejar la cancelación y restablecer los valores del formulario
   const handleCancel = () => {
     setTask({
       content: taskToEdit?.content || "",
@@ -114,14 +107,14 @@ const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCancel }) =
       style: taskToEdit?.style || "common",
       image: taskToEdit?.image || undefined,
     });
-    setImagePreview(null); // Limpiar la vista previa de la imagen
-    onCancel(); // Llamar a la función onCancel pasada como prop
+    setImagePreview(null);
+    onCancel();
   };
 
   return (
-    <div className="p-6 max-w-xl mx-auto rounded-lg shadow-xl border-2 border-gray-400 bg-white">
+    <div className="p-6 max-w-xl mx-auto rounded-lg shadow-xl border-2 border-violet-700 bg-opacity-50 backdrop-blur-md bg-violet-400">
       <textarea
-        className="w-full p-4 border rounded-lg text-lg"
+        className="w-full p-4 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-violet-700 transition duration-300 ease-in-out bg-opacity-50 backdrop-blur-md"
         value={task.content}
         onChange={(e) => handleChange("content", e.target.value)}
         placeholder="Escribe tu tarea..."
@@ -137,7 +130,7 @@ const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCancel }) =
             type="color"
             value={task.color}
             onChange={(e) => handleChange("color", e.target.value)}
-            className="w-6 h-6 border-none rounded-full transition duration-300"
+            className="w-6 h-6 bg-violet-300 border-none rounded-full transition duration-300"
           />
         </div>
         <label className="text-l font-semibold text-gray-800">Fuente:</label>
@@ -156,7 +149,7 @@ const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCancel }) =
         <input
           type="color"
           value={task.textColor}
-          className="w-6 h-6 border-none rounded-full transition duration-300"
+          className="w-6 h-6 bg-violet-300 border-none rounded-full transition duration-300"
           onChange={(e) => handleChange("textColor", e.target.value)}
         />
         <label className="text-l font-semibold text-gray-800">Estilo:</label>
@@ -166,19 +159,44 @@ const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCancel }) =
           className="p-2 rounded-lg shadow-md border-none cursor-pointer w-44"
         >
           <option value="common">Simple</option>
-          <option value="chalkboard">Pizarrón</option>
           <option value="grid">Cuadriculado</option>
           <option value="stripes">Rayas</option>
           <option value="folded">Arrugado</option>
         </select>
         <label className="text-l font-semibold text-gray-800">Imagen (opcional):</label>
-        <input type="file" accept="image/*" onChange={handleImageUpload} />
+        <div className="relative w-full group flex">
+          <div className="relative z-40 cursor-pointer group-hover:translate-x-4 group-hover:shadow-2xl group-hover:-translate-y-4 transition-all duration-500 bg-slate-200 flex items-center justify-center h-10 w-10 rounded-xl mr-4">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="absolute inset-0 opacity-0 cursor-pointer"
+            />
+            <svg
+              className="h-6 w-6 text-black/60"
+              strokeLinejoin="round"
+              strokeLinecap="round"
+              strokeWidth="2"
+              stroke="currentColor"
+              fill="none"
+              viewBox="0 0 24 24"
+              height="10"
+              width="10"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
+              <path d="M7 9l5 -5l5 5"></path>
+              <path d="M12 4l0 12"></path>
+            </svg>
+          </div>
+          <div className="absolute border opacity-0 group-hover:opacity-80 transition-all duration-300 border-dashed border-sky-400 inset-0 z-30 bg-transparent flex items-center justify-center h-10 w-10 rounded-xl"></div>
+        </div>
         {imagePreview && (
           <div className="mt-4 flex justify-center">
             <img
               src={imagePreview}
               alt="Vista previa"
-              className="w-32 h-32 object-contain border rounded"
+              className="w-32 h-32 object-contain"
             />
           </div>
         )}
@@ -192,7 +210,7 @@ const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCancel }) =
         </button>
         <button
           onClick={handleCancel}
-          className="p-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-all"
+          className="p-2 bg-white text-black rounded hover:bg-gray-600 hover:text-white  transition-all"
         >
           Cancelar
         </button>

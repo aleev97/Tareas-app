@@ -11,7 +11,7 @@ const HomePage: React.FC = () => {
     font: string;
     textColor: string;
     image?: string;
-    style?: "common" | "chalkboard";
+    style?: "common";
   } | null>(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [filter, setFilter] = useState<"all" | "completed" | "pending">("all");
@@ -84,8 +84,8 @@ const HomePage: React.FC = () => {
       
       {isEditorOpen && (
         // Modal container with overlay background
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl">
+        <div className=" backdrop-blur-sm fixed inset-0 bg-gray-200 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="p-6 rounded-lg w-full max-w-2xl">
             <TaskEditor
               taskToEdit={editingTask || { id: "", content: "", color: "", font: "", textColor: "" }}
               onSave={handleCloseEditor}
