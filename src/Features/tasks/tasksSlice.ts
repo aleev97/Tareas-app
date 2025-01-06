@@ -1,22 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-export interface Task {
-  id: string;
-  content: string;
-  color: string;
-  font: string;
-  textColor: string;
-  image?: string;
-  createdAt: string;
-  style: "common" | "chalkboard" | "grid" | "stripes" | "folded";
-  completed: boolean;
-  priority: "alta" | "media" | "baja"; // Nueva propiedad
-}
-
-
-interface TasksState {
-  tasks: Task[];
-}
+import { Task, TasksState } from "../../types";
 
 const initialState: TasksState = {
   tasks: JSON.parse(localStorage.getItem("tasks") || "[]").map((task: Task) => ({
@@ -24,7 +7,6 @@ const initialState: TasksState = {
     priority: task.priority || "media", // Valor predeterminado para tareas existentes
   })),
 };
-
 
 const tasksSlice = createSlice({
   name: "tasks",
@@ -44,11 +26,13 @@ const tasksSlice = createSlice({
         state.tasks.push(action.payload);
       }
       localStorage.setItem("tasks", JSON.stringify(state.tasks));
-    },    
+    },   
+
     deleteTask: (state, action: PayloadAction<string>) => {
       state.tasks = state.tasks.filter((task) => task.id !== action.payload);
       localStorage.setItem("tasks", JSON.stringify(state.tasks));
     },
+
     toggleCompleted: (state, action: PayloadAction<string>) => {
       const task = state.tasks.find((task)=> task.id === action.payload);
       if (task) {
@@ -56,6 +40,7 @@ const tasksSlice = createSlice({
       } 
       localStorage.setItem('tasks', JSON.stringify(state.tasks));
     },
+    
     deleteCompletedTasks: (state) => {
       state.tasks = state.tasks.filter(task => !task.completed);
     },

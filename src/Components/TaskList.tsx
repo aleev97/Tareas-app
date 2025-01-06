@@ -4,12 +4,8 @@ import { useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../Features/store";
 import { deleteTask, toggleCompleted, deleteCompletedTasks } from "../Features/tasks/tasksSlice";
-import TaskCard from "./TaskCard";
-
-interface TaskListProps {
-  onEdit: (id: string) => void;
-  filter: "all" | "completed" | "pending";
-}
+import { TaskCard } from "./TaskCard";
+import { TaskListProps } from "../types";
 
 const EmptyState: React.FC<{ filter: "all" | "completed" | "pending" }> = ({ filter }) => {
   const messages = {
@@ -29,7 +25,6 @@ const EmptyState: React.FC<{ filter: "all" | "completed" | "pending" }> = ({ fil
     </motion.div>
   );
 };
-
 
 export const TaskList: React.FC<TaskListProps> = ({ onEdit, filter }) => {
   const tasks = useSelector((state: RootState) => state.tasks.tasks);
@@ -65,13 +60,12 @@ export const TaskList: React.FC<TaskListProps> = ({ onEdit, filter }) => {
         <div className="flex flex-col items-center justify-center mb-4 text-lg font-semibold text-gray-700 text-center">
           <p className="mb-4">Tareas completadas: {completedTasks}</p>
           <button
-  onClick={handleDeleteCompletedTasks}
-  className={`p-2 ${
-    filter === "completed" ? "bg-red-500" : "bg-gray-500"
-  } text-white rounded flex items-center justify-center space-x-2 hover:shadow-lg transition-transform duration-300`}
->
-  Eliminar tareas completadas
-</button>
+            onClick={handleDeleteCompletedTasks}
+            className={`p-2 ${filter === "completed" ? "bg-red-500" : "bg-gray-500"
+              } text-white rounded flex items-center justify-center space-x-2 hover:shadow-lg transition-transform duration-300`}
+          >
+            Eliminar tareas completadas
+          </button>
         </div>
 
       )}
@@ -81,7 +75,6 @@ export const TaskList: React.FC<TaskListProps> = ({ onEdit, filter }) => {
         </div>
       )}
 
-      {/* Mostrar tareas filtradas o mensaje vacío */}
       {filteredTasks.length === 0 ? (
         <EmptyState filter={filter} />
       ) : (

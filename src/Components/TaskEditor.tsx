@@ -2,22 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addTask, editTask } from "../Features/tasks/tasksSlice";
 import { v4 as uuidv4 } from "uuid";
-
-export interface TaskEditProps {
-  taskToEdit: {
-    id: string;
-    content: string;
-    color: string;
-    font: string;
-    textColor: string;
-    image?: string;
-    style?: "common" | "grid" | "stripes" | "folded";
-    createdAt?: string;
-    priority?: "baja" | "media" | "alta";
-  } | null;
-  onSave: () => void;
-  onCancel: () => void;
-}
+import { TaskEditProps } from "../types";
 
 export const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCancel }) => {
   const [task, setTask] = useState({
@@ -56,7 +41,6 @@ export const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCanc
     } else {
       dispatch(addTask(newTask));
     }
-
     onSave();
   };
 
@@ -95,9 +79,9 @@ export const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCanc
       default:
         return task.image
           ? {
-              backgroundColor: task.color,
-              color: task.textColor,
-            }
+            backgroundColor: task.color,
+            color: task.textColor,
+          }
           : { backgroundColor: task.color, color: task.textColor };
     }
   };
@@ -178,7 +162,6 @@ export const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCanc
           <option value="media">Media</option>
           <option value="alta">Alta</option>
         </select>
-
         <label className="text-l font-semibold text-gray-800">Imagen (opcional):</label>
         <div className="relative w-full group flex">
           <div className="relative z-40 cursor-pointer group-hover:translate-x-4 group-hover:shadow-2xl group-hover:-translate-y-4 transition-all duration-500 bg-slate-200 flex items-center justify-center h-10 w-10 rounded-xl mr-4">
