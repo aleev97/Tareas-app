@@ -13,7 +13,10 @@ export const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCanc
     style: taskToEdit?.style || "common",
     image: taskToEdit?.image || undefined,
     priority: taskToEdit?.priority || "baja",
+    dueDate: taskToEdit?.dueDate || "", // Cambiado de tipo "date" a "datetime-local"
   });
+
+
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -95,6 +98,7 @@ export const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCanc
       style: taskToEdit?.style || "common",
       image: taskToEdit?.image || undefined,
       priority: taskToEdit?.priority || "baja",
+      dueDate: taskToEdit?.dueDate || "", // Restaurar la fecha si existe
     });
     setImagePreview(null);
     onCancel();
@@ -107,20 +111,47 @@ export const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCanc
         value={task.content}
         onChange={(e) => handleChange("content", e.target.value)}
         placeholder="Escribe tu tarea..."
-        style={{
-          ...getTextareaStyle(),
-          fontFamily: task.font,
-        }}
+        style={{ ...getTextareaStyle(), fontFamily: task.font }}
       />
       <div className="mt-4 flex flex-col space-y-2">
         <div className="flex flex-col">
-          <label className="text-l font-semibold text-gray-800">Color de fondo:</label>
+          <label className="text-l font-semibold text-gray-800">Fecha y hora límite:</label>
           <input
-            type="color"
-            value={task.color}
-            onChange={(e) => handleChange("color", e.target.value)}
-            className="w-6 h-6 bg-violet-300 border-none rounded-full transition duration-300"
+            type="datetime-local"
+            value={task.dueDate}
+            onChange={(e) => handleChange("dueDate", e.target.value)}
+            className="p-2 rounded-lg shadow-md border-none cursor-pointer w-44"
           />
+        </div>
+        <label className="text-l font-semibold text-gray-800">Prioridad:</label>
+        <select
+          value={task.priority}
+          onChange={(e) => handleChange("priority", e.target.value)}
+          className="p-2 rounded-lg shadow-md border-none cursor-pointer w-44"
+        >
+          <option value="baja">Baja</option>
+          <option value="media">Media</option>
+          <option value="alta">Alta</option>
+        </select>
+        <div className="flex justify-start mt-4 space-x-4">
+          <div className="flex flex-col">
+            <label className="text-l font-semibold text-gray-800">Color de fondo:</label>
+            <input
+              type="color"
+              value={task.color}
+              onChange={(e) => handleChange("color", e.target.value)}
+              className="w-6 h-6 bg-violet-300 border-none rounded-full transition duration-300"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-l font-semibold text-gray-800">Color de texto:</label>
+            <input
+              type="color"
+              value={task.textColor}
+              onChange={(e) => handleChange("textColor", e.target.value)}
+              className="w-6 h-6 bg-violet-300 border-none rounded-full transition duration-300"
+            />
+          </div>
         </div>
         <label className="text-l font-semibold text-gray-800">Fuente:</label>
         <select
@@ -134,13 +165,6 @@ export const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCanc
           <option value="Georgia">Georgia</option>
           <option value="Verdana">Verdana</option>
         </select>
-        <label className="text-l font-semibold text-gray-800">Color de texto:</label>
-        <input
-          type="color"
-          value={task.textColor}
-          className="w-6 h-6 bg-violet-300 border-none rounded-full transition duration-300"
-          onChange={(e) => handleChange("textColor", e.target.value)}
-        />
         <label className="text-l font-semibold text-gray-800">Estilo:</label>
         <select
           value={task.style}
@@ -151,16 +175,6 @@ export const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCanc
           <option value="grid">Cuadriculado</option>
           <option value="stripes">Rayas</option>
           <option value="folded">Arrugado</option>
-        </select>
-        <label className="text-l font-semibold text-gray-800">Prioridad:</label>
-        <select
-          value={task.priority}
-          onChange={(e) => handleChange("priority", e.target.value)}
-          className="p-2 rounded-lg shadow-md border-none cursor-pointer w-44"
-        >
-          <option value="baja">Baja</option>
-          <option value="media">Media</option>
-          <option value="alta">Alta</option>
         </select>
         <label className="text-l font-semibold text-gray-800">Imagen (opcional):</label>
         <div className="relative w-full group flex">

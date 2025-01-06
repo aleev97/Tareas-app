@@ -1,5 +1,6 @@
 export interface TaskCardProps {
     task: {
+        dueDate: string | number | Date;
         id: string;
         color: string;
         textColor: string;
@@ -17,7 +18,7 @@ export interface TaskCardProps {
 }
 
 export interface TaskEditProps {
-    taskToEdit: {
+    taskToEdit?: {
         id: string;
         content: string;
         color: string;
@@ -27,7 +28,9 @@ export interface TaskEditProps {
         style?: "common" | "grid" | "stripes" | "folded";
         createdAt?: string;
         priority?: "baja" | "media" | "alta";
-    } | null;
+        dueDate?: string; // Added dueDate property
+    };
+
     onSave: () => void;
     onCancel: () => void;
 }
@@ -38,16 +41,18 @@ export interface TaskListProps {
 }
 
 export interface Task {
+
     id: string;
     content: string;
+    priority: "alta" | "media" | "baja";
+    createdAt: string;
+    dueDate?: string | null;
+    completed: boolean;
     color: string;
     font: string;
     textColor: string;
     image?: string;
-    createdAt: string;
-    style: "common" | "chalkboard" | "grid" | "stripes" | "folded";
-    completed: boolean;
-    priority: "alta" | "media" | "baja"; // Nueva propiedad
+    style: "common" | "chalkboard" | "grid" | "stripes" | "folded";  
 }
 
 export interface TasksState {

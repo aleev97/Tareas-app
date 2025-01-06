@@ -82,13 +82,13 @@ export const TaskList: React.FC<TaskListProps> = ({ onEdit, filter }) => {
           {filteredTasks.map((task) => (
             <motion.div
               key={task.id}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.5 }}
             >
               <TaskCard
-                task={{ ...task, createdAt: task.createdAt || new Date().toISOString() }}
+                task={{ ...task, createdAt: task.createdAt || new Date().toISOString(), dueDate: task.dueDate || new Date().toISOString() }}
                 onEdit={() => onEdit(task.id)}
                 onDelete={() => handleDelete(task.id)}
                 onToggleCompleted={handleToggleCompleted}
