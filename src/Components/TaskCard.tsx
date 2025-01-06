@@ -11,7 +11,8 @@ interface TaskCardProps {
     font: string;
     content: string;
     completed: boolean;
-    createdAt: string; // Nueva propiedad
+    createdAt: string;
+    priority: "alta" | "media" | "baja";
     image?: string;
     style?: "common" | "chalkboard" | "grid" | "stripes" | "folded";
   };
@@ -21,6 +22,23 @@ interface TaskCardProps {
 }
 
 const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onDelete, onToggleCompleted }) => {
+
+
+  const getPriorityIndicator = () => {
+    switch (task.priority) {
+      case "alta":
+        return { label: "Alta", color: "#ff4d4f" }; // Rojo
+      case "media":
+        return { label: "Media", color: "#ffa940" }; // Naranja
+      case "baja":
+        return { label: "Baja", color: "#52c41a" }; // Verde
+      default:
+        return { label: "Sin prioridad", color: "#d9d9d9" }; // Gris
+    }
+  };
+
+  const { label, color } = getPriorityIndicator();
+
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
@@ -82,6 +100,23 @@ const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onDelete, 
       whileHover={{ scale: 1.05 }}
       transition={{ type: "spring", stiffness: 300 }}
     >
+      <div
+        className="priority-indicator"
+        style={{
+          position: "absolute",
+          top: "10px",
+          left: "10px",
+          backgroundColor: color,
+          color: "#fff",
+          borderRadius: "12px",
+          padding: "4px 8px",
+          fontSize: "0.75rem",
+          fontWeight: "bold",
+          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+        }}
+      >
+        {label}
+      </div>
       <p className="text-sm mt-2 text-black w-72 border-t pt-2 bg-gray-100 rounded-lg px-3 py-1 shadow-sm">
         Creado: {formatDate(task.createdAt)}
       </p>

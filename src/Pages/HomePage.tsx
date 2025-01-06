@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { TaskList } from "../Components/TaskList";
-import TaskEditor from "../Components/TaskEditor";
-import NoteCanvas from "../Components/NoteCanvas";
+import { TaskEditor } from "../Components/TaskEditor";
 
 const HomePage: React.FC = () => {
   const [editingTask, setEditingTask] = useState<{
@@ -15,7 +14,6 @@ const HomePage: React.FC = () => {
   } | null>(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [filter, setFilter] = useState<"all" | "completed" | "pending">("all");
-  const [showCanvas, setShowCanvas] = useState(false);
 
   const handleEdit = (taskId: string) => {
     const taskToEdit = {
@@ -38,10 +36,6 @@ const HomePage: React.FC = () => {
     setFilter(e.target.value as "all" | "completed" | "pending");
   };
 
-  const toggleCanvas = () => {
-    setShowCanvas((prevState) => !prevState);
-  };
-
   return (
     <div className="p-4">
       <h1 className="text-5xl font-extrabold text-center mb-20 leading-tight tracking-wide 
@@ -51,13 +45,6 @@ const HomePage: React.FC = () => {
         <span className="text-black absolute right-96 top-1/3 transform -translate-y-1/2 text-5xl">📝</span>
       </h1>
       <div className="text-center flex justify-center space-x-8">
-        <button
-          onClick={toggleCanvas}
-          className="mb-3 p-3 text-white border-2 border-transparent rounded-md bg-gradient-to-r from-purple-600 to-purple-700 hover:border-purple-400 hover:border-3 font-semibold text-lg w-40 h-12 transition-all ease-in-out transform hover:scale-110 shadow-lg flex items-center justify-center"
-        >
-          Pizarrón
-        </button>
-        {showCanvas && <NoteCanvas />}
         <button
           onClick={() => setIsEditorOpen(true)}
           className="mb-3 p-3 text-white border-2 border-transparent rounded-md bg-gradient-to-r from-purple-600 to-purple-700 hover:border-purple-400 hover:border-3 font-semibold text-lg w-48 h-12 transition-all ease-in-out transform hover:scale-110 shadow-lg flex items-center justify-center"

@@ -10,25 +10,32 @@ export interface Task {
   createdAt: string;
   style: "common" | "chalkboard" | "grid" | "stripes" | "folded";
   completed: boolean;
+  priority: "alta" | "media" | "baja"; // Nueva propiedad
 }
+
 
 interface TasksState {
   tasks: Task[];
 }
 
 const initialState: TasksState = {
-  tasks: JSON.parse(localStorage.getItem('tasks') || '[]'),
+  tasks: JSON.parse(localStorage.getItem("tasks") || "[]").map((task: Task) => ({
+    ...task,
+    priority: task.priority || "media", // Valor predeterminado para tareas existentes
+  })),
 };
+
 
 const tasksSlice = createSlice({
   name: "tasks",
   initialState,
   reducers: {
     addTask: (state, action: PayloadAction<Task>) => {
-      console.log("Agregando tarea:", action.payload); // Depuración
-      state.tasks.push(action.payload);
-      localStorage.setItem('tasks', JSON.stringify(state.tasks));
+      const newTask = { ...action.payload, priority: action.payload.priority || "media" }; // Valor predeterminado
+      state.tasks.push(newTask);
+      localStorage.setItem("tasks", JSON.stringify(state.tasks));
     },
+    
     editTask: (state, action: PayloadAction<Task>) => {
       const index = state.tasks.findIndex((task) => task.id === action.payload.id);
       if (index !== -1) {

@@ -13,12 +13,13 @@ export interface TaskEditProps {
     image?: string;
     style?: "common" | "grid" | "stripes" | "folded";
     createdAt?: string;
+    priority?: "baja" | "media" | "alta";
   } | null;
   onSave: () => void;
   onCancel: () => void;
 }
 
-const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCancel }) => {
+export const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCancel }) => {
   const [task, setTask] = useState({
     content: taskToEdit?.content || "",
     color: taskToEdit?.color || "#ffffff",
@@ -26,6 +27,7 @@ const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCancel }) =
     textColor: taskToEdit?.textColor || "#000000",
     style: taskToEdit?.style || "common",
     image: taskToEdit?.image || undefined,
+    priority: taskToEdit?.priority || "baja",
   });
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -93,9 +95,9 @@ const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCancel }) =
       default:
         return task.image
           ? {
-            backgroundColor: task.color,
-            color: task.textColor,
-          }
+              backgroundColor: task.color,
+              color: task.textColor,
+            }
           : { backgroundColor: task.color, color: task.textColor };
     }
   };
@@ -108,13 +110,14 @@ const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCancel }) =
       textColor: taskToEdit?.textColor || "#000000",
       style: taskToEdit?.style || "common",
       image: taskToEdit?.image || undefined,
+      priority: taskToEdit?.priority || "baja",
     });
     setImagePreview(null);
     onCancel();
   };
 
   return (
-    <div className="p-6 max-w-xl mx-auto rounded-lg shadow-xl border-2 border-violet-700 bg-opacity-60 backdrop-blur-md bg-violet-400">
+    <div className="p-3 max-w-xl h-auto mx-auto rounded-lg shadow-xl border-2 border-violet-700 bg-opacity-60 backdrop-blur-md bg-violet-400 overflow-y-auto max-h-[100vh]">
       <textarea
         className="w-full p-4 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-violet-700 transition duration-300 ease-in-out bg-opacity-50 backdrop-blur-md"
         value={task.content}
@@ -165,6 +168,17 @@ const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCancel }) =
           <option value="stripes">Rayas</option>
           <option value="folded">Arrugado</option>
         </select>
+        <label className="text-l font-semibold text-gray-800">Prioridad:</label>
+        <select
+          value={task.priority}
+          onChange={(e) => handleChange("priority", e.target.value)}
+          className="p-2 rounded-lg shadow-md border-none cursor-pointer w-44"
+        >
+          <option value="baja">Baja</option>
+          <option value="media">Media</option>
+          <option value="alta">Alta</option>
+        </select>
+
         <label className="text-l font-semibold text-gray-800">Imagen (opcional):</label>
         <div className="relative w-full group flex">
           <div className="relative z-40 cursor-pointer group-hover:translate-x-4 group-hover:shadow-2xl group-hover:-translate-y-4 transition-all duration-500 bg-slate-200 flex items-center justify-center h-10 w-10 rounded-xl mr-4">
@@ -212,7 +226,7 @@ const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCancel }) =
         </button>
         <button
           onClick={handleCancel}
-          className="p-2 bg-white text-black rounded hover:bg-gray-600 hover:text-white  transition-all"
+          className="p-2 bg-white text-black rounded hover:bg-gray-600 hover:text-white transition-all"
         >
           Cancelar
         </button>
@@ -220,5 +234,3 @@ const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCancel }) =
     </div>
   );
 };
-
-export default TaskEditor;
