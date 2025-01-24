@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Modal from "react-modal";
 import { TaskCardProps } from '../types';
+
 Modal.setAppElement('#root');
 
 export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onDelete, onToggleCompleted }) => {
@@ -24,28 +25,57 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onD
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  // Calculamos si la tarea está vencida
-  const isTaskExpired = new Date(task.dueDate) < new Date();
+  // Verificar si la tarea está vencida
+  const isTaskExpired = task.dueDate ? new Date(task.dueDate) < new Date() : false;
 
-  const getCardStyle = () => ({
-    backgroundColor: task.color || "#fffbe6",
-    color: task.textColor || "#333",
-    fontFamily: task.font || "'Comic Sans MS', cursive, sans-serif",
-    boxShadow: "4px 4px 12px rgba(0, 0, 0, 0.2)",
-    borderRadius: "12px",
-    padding: "20px",
-    position: "relative",
-    overflow: "hidden",
-    backgroundImage: task.style === "grid"
-      ? "linear-gradient(90deg, #f0f0f0 1px, transparent 1px), linear-gradient(#f0f0f0 1px, transparent 1px)"
-      : task.style === "stripes"
-        ? "repeating-linear-gradient(0deg, #e2e2e2, #e2e2e2 1px, transparent 1px, transparent 10px)"
-        : task.style === "folded"
-          ? "url('https://www.transparenttextures.com/patterns/paper-fibers.png')"
-          : "",
-    backgroundSize: task.style === "grid" ? "20px 20px" : task.style === "folded" ? "cover" : "",
-    transform: "rotate(-1deg)",
-  });
+  const formatDate = (dateString: string) => {
+    if (!dateString || isNaN(new Date(dateString).getTime())) return "Fecha no válida";
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: "short",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    };
+    return new Date(dateString).toLocaleDateString("es-ES", options);
+  };
+
+  const getCardStyle = () => {
+    const baseStyle = {
+      backgroundColor: task.color || "#fffbe6",
+      color: task.textColor || "#333",
+      fontFamily: task.font || "'Comic Sans MS', cursive, sans-serif",
+      boxShadow: "4px 4px 12px rgba(0, 0, 0, 0.2)",
+      borderRadius: "12px",
+      padding: "20px",
+      position: "relative",
+      overflow: "hidden",
+    };
+
+    switch (task.style) {
+      case "grid":
+        return {
+          ...baseStyle,
+          backgroundImage: "linear-gradient(90deg, #f0f0f0 1px, transparent 1px), linear-gradient(#f0f0f0 1px, transparent 1px)",
+          backgroundSize: "20px 20px",
+        };
+      case "stripes":
+        return {
+          ...baseStyle,
+          backgroundImage: "repeating-linear-gradient(0deg, #e2e2e2, #e2e2e2 1px, transparent 1px, transparent 10px)",
+        };
+      case "folded":
+        return {
+          ...baseStyle,
+          backgroundImage: "url('https://www.transparenttextures.com/patterns/paper-fibers.png')",
+          backgroundSize: "cover",
+        };
+      default:
+        return baseStyle;
+    }
+  };
 
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => {
@@ -61,27 +91,6 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onD
       setConfirmDelete(true);
     }
   };
-
-  const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = {
-      weekday: "short",
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    };
-    const date = new Date(dateString);
-    return date.toLocaleDateString("es-ES", options);
-  };
-
-  useEffect(() => {
-    // Verifica si la tarea ha vencido
-    if (isTaskExpired) {
-      onDelete();  // Elimina la tarea si la fecha límite ha pasado
-    }
-  }, [isTaskExpired, onDelete]);
 
   return (
     <motion.div
@@ -109,27 +118,24 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onD
       >
         {label}
       </div>
+
+      {isTaskExpired && (
+        <div className="expired-indicator" style={{ color: "#d32f2f", fontWeight: "bold", marginBottom: "8px", textAlign: "center" }}>
+          ¡Tarea vencida!
+        </div>
+      )}
+
       <p className="text-xs mt-2 text-black w-72 border-t pt-2 bg-gray-100 rounded-lg px-3 py-1 shadow-sm">
-        Creado: {formatDate(task.createdAt.toString())}
+        Creado: {formatDate(task.createdAt)}
       </p>
       <p className="text-xs mt-2 text-black w-72 border-t pt-2 bg-gray-100 rounded-lg px-3 py-1 shadow-sm">
-        Finalización: {formatDate(task.dueDate.toString())}
+        Finalización: {formatDate(task.dueDate?.toString() || "")}
       </p>
-      <div className="pin" style={{
-        width: "16px",
-        height: "16px",
-        backgroundColor: "#d32f2f",
-        borderRadius: "50%",
-        position: "absolute",
-        top: "-8px",
-        left: "50%",
-        transform: "translateX(-50%)",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-      }}></div>
 
       <p className="text-lg mt-4" style={{ color: task.textColor, whiteSpace: "pre-wrap" }}>
         {task.content}
       </p>
+
       {task.image && (
         <div className="relative mt-4">
           <motion.img
@@ -181,7 +187,7 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onD
               onClick={handleDelete}
               className="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition-all"
             >
-              {confirmDelete ? "¿Estás seguro?" : "Eliminar"}
+              {confirmDelete ? "Confirmar eliminación" : "Eliminar"}
             </button>
             <button
               onClick={() => {
