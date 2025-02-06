@@ -120,7 +120,7 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onD
       </div>
 
       {isTaskExpired && (
-        <div className="expired-indicator flex justify-center " style={{ color: "#d32f2f", fontWeight: "bold", marginBottom: "8px" }}>
+        <div className="expired-indicator" style={{ color: "#d32f2f", fontWeight: "bold", marginBottom: "8px" }}>
           ¡Tarea vencida!
         </div>
       )}
@@ -167,24 +167,25 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onD
           <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" d="M15.17 11.053L11.18 15.315C10.8416 15.6932 10.3599 15.9119 9.85236 15.9178C9.34487 15.9237 8.85821 15.7162 8.51104 15.346C7.74412 14.5454 7.757 13.2788 8.54004 12.494L13.899 6.763C14.4902 6.10491 15.3315 5.72677 16.2161 5.72163C17.1006 5.71649 17.9463 6.08482 18.545 6.736C19.8222 8.14736 19.8131 10.2995 18.524 11.7L12.842 17.771C12.0334 18.5827 10.9265 19.0261 9.78113 18.9971C8.63575 18.9682 7.55268 18.4695 6.78604 17.618C5.0337 15.6414 5.07705 12.6549 6.88604 10.73L12.253 5"></path>
         </svg>
       </button>
+
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        className="fixed inset-0 flex justify-center items-center backdrop-blur-sm bg-black/30"
+        className="fixed inset-0 flex justify-center items-center backdrop-blur-sm"
         contentLabel="Opciones de tarea"
       >
-        <div className="bg-gradient-to-br from-violet-500/60 to-purple-700/60 p-6 rounded-2xl shadow-2xl w-96 relative text-white">
+        <div className="bg-violet-500 bg-opacity-80 p-6 rounded-lg shadow-lg w-80 relative">
           <button
             onClick={closeModal}
-            className="absolute top-3 right-3 rounded-full w-8 h-8 flex items-center justify-center bg-white/20 hover:bg-red-500/80 transition-all"
+            className="absolute top-2 right-2 rounded-full px-3 py-1 bg-white hover:bg-red-400 transition-colors"
           >
-            ✕
+            X
           </button>
-          <h2 className="text-2xl mb-4 font-bold text-center">Opciones</h2>
-          <div className="flex flex-col space-y-4 mt-6">
+          <h2 className="text-xl mb-4 font-semibold text-white">Opciones:</h2>
+          <div className="flex space-x-3 mt-6">
             <button
               onClick={handleDelete}
-              className="px-5 py-3 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-700 transition-all font-medium"
+              className="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition-all"
             >
               {confirmDelete ? "Confirmar eliminación" : "Eliminar"}
             </button>
@@ -193,13 +194,14 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onD
                 onEdit();
                 closeModal();
               }}
-              className="px-5 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-800 transition-all font-medium"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-800 transition-all"
             >
               Editar
             </button>
           </div>
         </div>
       </Modal>
+
       <label className="flex items-center gap-2 mt-4">
         <input
           type="checkbox"
