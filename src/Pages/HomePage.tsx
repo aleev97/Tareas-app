@@ -37,12 +37,12 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8">
-      <h1 className="text-3xl sm:text-5xl font-extrabold text-center mb-6 sm:mb-10 leading-tight tracking-wide 
-            bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-transparent 
-            bg-clip-text shadow-xl shadow-black-500/50 relative flex items-center justify-center">
+    <div className="absolute top-0 z-[-2] h-screen w-screen bg-white/60 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]">
+      <h1 className="text-3xl sm:text-6xl font-bold text-center gap-1 mb-8 sm:mb-6 p-12 sm:p-10 tracking-tight 
+           bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-transparent 
+           bg-clip-text flex justify-center">
         Lista de Tareas
-        <span className="text-black ml-3 text-3xl sm:text-5xl relative -top-1.5">📝</span>
+        <span className="text-black p-2 sm:p-2 text-3xl sm:text-5xl relative -top-1.5">📝</span>
       </h1>
       <div className="flex justify-center items-center mt-4 sm:mt-4">
         <button
@@ -52,7 +52,7 @@ const HomePage: React.FC = () => {
           Crear nueva tarea
         </button>
       </div>
-      <div className="flex flex-col items-center sm:items-start sm:absolute sm:top-24 sm:right-10 mt-4">
+      <div className="flex flex-col items-center sm:items-start sm:absolute sm:top-4 sm:right-10 mt-4">
         <label htmlFor="filter" className="block text-sm sm:text-base font-semibold text-gray-900 text-center">
           Filtrar tareas por estado
         </label>

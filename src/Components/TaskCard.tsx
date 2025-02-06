@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Modal from "react-modal";
 import { TaskCardProps } from '../types';
+
 Modal.setAppElement('#root');
 
 export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onDelete, onToggleCompleted }) => {
@@ -9,13 +10,13 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onD
   const getPriorityIndicator = () => {
     switch (task.priority) {
       case "alta":
-        return { label: "Alta", color: "#ff4d4f" }; // Rojo
+        return { label: "Alta", color: "#ff4d4f" }; 
       case "media":
-        return { label: "Media", color: "#ffa940" }; // Naranja
+        return { label: "Media", color: "#ffa940" };
       case "baja":
-        return { label: "Baja", color: "#52c41a" }; // Verde
+        return { label: "Baja", color: "#52c41a" }; 
       default:
-        return { label: "Sin prioridad", color: "#d9d9d9" }; // Gris
+        return { label: "Sin prioridad", color: "#d9d9d9" };
     }
   };
 
@@ -24,28 +25,57 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onD
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  // Calculamos si la tarea está vencida
-  const isTaskExpired = new Date(task.dueDate) < new Date();
+  // Verificar si la tarea está vencida
+  const isTaskExpired = task.dueDate ? new Date(task.dueDate) < new Date() : false;
 
-  const getCardStyle = () => ({
-    backgroundColor: task.color || "#fffbe6",
-    color: task.textColor || "#333",
-    fontFamily: task.font || "'Comic Sans MS', cursive, sans-serif",
-    boxShadow: "4px 4px 12px rgba(0, 0, 0, 0.2)",
-    borderRadius: "12px",
-    padding: "20px",
-    position: "relative",
-    overflow: "hidden",
-    backgroundImage: task.style === "grid"
-      ? "linear-gradient(90deg, #f0f0f0 1px, transparent 1px), linear-gradient(#f0f0f0 1px, transparent 1px)"
-      : task.style === "stripes"
-        ? "repeating-linear-gradient(0deg, #e2e2e2, #e2e2e2 1px, transparent 1px, transparent 10px)"
-        : task.style === "folded"
-          ? "url('https://www.transparenttextures.com/patterns/paper-fibers.png')"
-          : "",
-    backgroundSize: task.style === "grid" ? "20px 20px" : task.style === "folded" ? "cover" : "",
-    transform: "rotate(-1deg)",
-  });
+  const formatDate = (dateString: string) => {
+    if (!dateString || isNaN(new Date(dateString).getTime())) return "Fecha no válida";
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: "short",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    };
+    return new Date(dateString).toLocaleDateString("es-ES", options);
+  };
+
+  const getCardStyle = () => {
+    const baseStyle = {
+      backgroundColor: task.color || "#fffbe6",
+      color: task.textColor || "#333",
+      fontFamily: task.font || "'Comic Sans MS', cursive, sans-serif",
+      boxShadow: "4px 4px 12px rgba(0, 0, 0, 0.2)",
+      borderRadius: "12px",
+      padding: "20px",
+      position: "relative",
+      overflow: "hidden",
+    };
+
+    switch (task.style) {
+      case "grid":
+        return {
+          ...baseStyle,
+          backgroundImage: "linear-gradient(90deg, #f0f0f0 1px, transparent 1px), linear-gradient(#f0f0f0 1px, transparent 1px)",
+          backgroundSize: "20px 20px",
+        };
+      case "stripes":
+        return {
+          ...baseStyle,
+          backgroundImage: "repeating-linear-gradient(0deg, #e2e2e2, #e2e2e2 1px, transparent 1px, transparent 10px)",
+        };
+      case "folded":
+        return {
+          ...baseStyle,
+          backgroundImage: "url('https://www.transparenttextures.com/patterns/paper-fibers.png')",
+          backgroundSize: "cover",
+        };
+      default:
+        return baseStyle;
+    }
+  };
 
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => {
@@ -61,27 +91,6 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onD
       setConfirmDelete(true);
     }
   };
-
-  const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = {
-      weekday: "short",
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    };
-    const date = new Date(dateString);
-    return date.toLocaleDateString("es-ES", options);
-  };
-
-  useEffect(() => {
-    // Verifica si la tarea ha vencido
-    if (isTaskExpired) {
-      onDelete();  // Elimina la tarea si la fecha límite ha pasado
-    }
-  }, [isTaskExpired, onDelete]);
 
   return (
     <motion.div
@@ -109,27 +118,24 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onD
       >
         {label}
       </div>
+
+      {isTaskExpired && (
+        <div className="expired-indicator flex justify-center " style={{ color: "#d32f2f", fontWeight: "bold", marginBottom: "8px" }}>
+          ¡Tarea vencida!
+        </div>
+      )}
+
       <p className="text-xs mt-2 text-black w-72 border-t pt-2 bg-gray-100 rounded-lg px-3 py-1 shadow-sm">
-        Creado: {formatDate(task.createdAt.toString())}
+        Creado: {formatDate(task.createdAt)}
       </p>
       <p className="text-xs mt-2 text-black w-72 border-t pt-2 bg-gray-100 rounded-lg px-3 py-1 shadow-sm">
-        Finalización: {formatDate(task.dueDate.toString())}
+        Finalización: {formatDate(task.dueDate ? task.dueDate.toString() : "")}
       </p>
-      <div className="pin" style={{
-        width: "16px",
-        height: "16px",
-        backgroundColor: "#d32f2f",
-        borderRadius: "50%",
-        position: "absolute",
-        top: "-8px",
-        left: "50%",
-        transform: "translateX(-50%)",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-      }}></div>
 
       <p className="text-lg mt-4" style={{ color: task.textColor, whiteSpace: "pre-wrap" }}>
         {task.content}
       </p>
+
       {task.image && (
         <div className="relative mt-4">
           <motion.img
@@ -161,41 +167,39 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onD
           <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="1.5" d="M15.17 11.053L11.18 15.315C10.8416 15.6932 10.3599 15.9119 9.85236 15.9178C9.34487 15.9237 8.85821 15.7162 8.51104 15.346C7.74412 14.5454 7.757 13.2788 8.54004 12.494L13.899 6.763C14.4902 6.10491 15.3315 5.72677 16.2161 5.72163C17.1006 5.71649 17.9463 6.08482 18.545 6.736C19.8222 8.14736 19.8131 10.2995 18.524 11.7L12.842 17.771C12.0334 18.5827 10.9265 19.0261 9.78113 18.9971C8.63575 18.9682 7.55268 18.4695 6.78604 17.618C5.0337 15.6414 5.07705 12.6549 6.88604 10.73L12.253 5"></path>
         </svg>
       </button>
-
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        className="fixed inset-0 flex justify-center items-center backdrop-blur-sm"
+        className="fixed inset-0 flex justify-center items-center backdrop-blur-sm bg-black/30"
         contentLabel="Opciones de tarea"
       >
-        <div className="bg-violet-500 bg-opacity-80 p-6 rounded-lg shadow-lg w-80 relative">
+        <div className="bg-gradient-to-br from-violet-500/60 to-purple-700/60 p-6 rounded-2xl shadow-2xl w-96 relative text-white">
           <button
             onClick={closeModal}
-            className="absolute top-2 right-2 rounded-full px-3 py-1 bg-white hover:bg-red-400 transition-colors"
+            className="absolute top-3 right-3 rounded-full w-8 h-8 flex items-center justify-center bg-white/20 hover:bg-red-500/80 transition-all"
           >
-            X
+            ✕
           </button>
-          <h2 className="text-xl mb-4 font-semibold text-white">Opciones:</h2>
-          <div className="flex space-x-3 mt-6">
+          <h2 className="text-2xl mb-4 font-bold text-center">Opciones</h2>
+          <div className="flex flex-col space-y-4 mt-6">
             <button
               onClick={handleDelete}
-              className="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition-all"
+              className="px-5 py-3 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-700 transition-all font-medium"
             >
-              {confirmDelete ? "¿Estás seguro?" : "Eliminar"}
+              {confirmDelete ? "Confirmar eliminación" : "Eliminar"}
             </button>
             <button
               onClick={() => {
                 onEdit();
                 closeModal();
               }}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-800 transition-all"
+              className="px-5 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-800 transition-all font-medium"
             >
               Editar
             </button>
           </div>
         </div>
       </Modal>
-
       <label className="flex items-center gap-2 mt-4">
         <input
           type="checkbox"
