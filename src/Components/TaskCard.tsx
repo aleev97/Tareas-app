@@ -120,7 +120,7 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onD
       </div>
 
       {isTaskExpired && (
-        <div className="expired-indicator" style={{ color: "#d32f2f", fontWeight: "bold", marginBottom: "8px" }}>
+        <div className="expired-indicator flex justify-center" style={{ color: "#d32f2f", fontWeight: "bold", marginBottom: "8px" }}>
           ¡Tarea vencida!
         </div>
       )}
