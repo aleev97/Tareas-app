@@ -105,7 +105,7 @@ export const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCanc
   };
 
   return (
-    <div className="p-3 max-w-xl h-auto mx-auto rounded-lg shadow-xl border-2 border-violet-700 bg-opacity-60 backdrop-blur-md bg-violet-400 overflow-y-auto max-h-[100vh]">
+    <form className="p-3 max-w-xl h-auto mx-auto rounded-lg shadow-xl border-2 border-violet-700 bg-opacity-60 backdrop-blur-md bg-violet-400 overflow-y-auto max-h-[100vh]">
       <textarea
         className="w-full p-4 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-violet-700 transition duration-300 ease-in-out bg-opacity-50 backdrop-blur-md"
         value={task.content}
@@ -228,6 +228,6 @@ export const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCanc
           Cancelar
         </button>
       </div>
-    </div>
+    </form>
   );
 };

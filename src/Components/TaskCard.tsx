@@ -10,11 +10,11 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onD
   const getPriorityIndicator = () => {
     switch (task.priority) {
       case "alta":
-        return { label: "Alta", color: "#ff4d4f" }; 
+        return { label: "Alta", color: "#ff4d4f" };
       case "media":
         return { label: "Media", color: "#ffa940" };
       case "baja":
-        return { label: "Baja", color: "#52c41a" }; 
+        return { label: "Baja", color: "#52c41a" };
       default:
         return { label: "Sin prioridad", color: "#d9d9d9" };
     }
@@ -28,19 +28,6 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onD
   // Verificar si la tarea está vencida
   const isTaskExpired = task.dueDate ? new Date(task.dueDate) < new Date() : false;
 
-  const formatDate = (dateString: string) => {
-    if (!dateString || isNaN(new Date(dateString).getTime())) return "Fecha no válida";
-    const options: Intl.DateTimeFormatOptions = {
-      weekday: "short",
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    };
-    return new Date(dateString).toLocaleDateString("es-ES", options);
-  };
 
   const getCardStyle = () => {
     const baseStyle = {
@@ -92,6 +79,20 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onD
     }
   };
 
+  const formatDateShort = (date: string | Date) => {
+    return new Intl.DateTimeFormat("es-ES", {
+      day: "2-digit",
+      month: "short",
+      year: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false, // Cambia a true si prefieres formato 12h con AM/PM
+    }).format(new Date(date));
+  };
+
+  // Ejemplo de salida: "05 sept. 24, 14:30"
+
+
   return (
     <motion.div
       className="task-card"
@@ -120,18 +121,15 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onD
       </div>
 
       {isTaskExpired && (
-        <div className="expired-indicator flex justify-center" style={{ color: "#d32f2f", fontWeight: "bold", marginBottom: "8px" }}>
+        <div className="expired-indicator flex justify-center text-red-600 font-semibold text-lg mb-2"
+        aria-live="assertive">
           ¡Tarea vencida!
         </div>
       )}
-
-      <p className="text-xs mt-2 text-black w-72 border-t pt-2 bg-gray-100 rounded-lg px-3 py-1 shadow-sm">
-        Creado: {formatDate(task.createdAt)}
-      </p>
-      <p className="text-xs mt-2 text-black w-72 border-t pt-2 bg-gray-100 rounded-lg px-3 py-1 shadow-sm">
-        Finalización: {formatDate(task.dueDate ? task.dueDate.toString() : "")}
-      </p>
-
+      <div className="text-xs w-56 sm:w-56 text-gray-600 mt-3 bg-gray-50 rounded px-3 py-1 shadow">
+        <p>Creado: {formatDateShort(task.createdAt)}</p>
+        <p className="mt-1">Finaliza: {formatDateShort(task.dueDate ? new Date(task.dueDate) : "")}</p>
+      </div>
       <p className="text-lg mt-4" style={{ color: task.textColor, whiteSpace: "pre-wrap" }}>
         {task.content}
       </p>
@@ -174,18 +172,25 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onD
         className="fixed inset-0 flex justify-center items-center backdrop-blur-sm"
         contentLabel="Opciones de tarea"
       >
-        <div className="bg-violet-500 bg-opacity-80 p-6 rounded-lg shadow-lg w-80 relative">
+        <div className="w-60 bg-white p-8 rounded-lg relative border-2 border-violet-800"
+          style={{
+            boxShadow: 'inset 0 4px 8px rgba(138, 43, 226, 0.3)', // sombra interna más clara y extendida
+          }}>
           <button
             onClick={closeModal}
-            className="absolute top-2 right-2 rounded-full px-3 py-1 bg-white hover:bg-red-400 transition-colors"
+            className="font-bold absolute top-2 right-2 rounded-md px-3 py-1 text-red-600 hover:bg-red-400 hover:text-white transition-colors"
           >
-            X
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
           </button>
-          <h2 className="text-xl mb-4 font-semibold text-white">Opciones:</h2>
+          <h2 className="text-xl mb-4 font-semibold text-black text-center w-full">
+            Opciones:
+          </h2>
+
           <div className="flex space-x-3 mt-6">
             <button
               onClick={handleDelete}
-              className="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition-all"
+              className="px-4 py-2 bg-white text-red-600 rounded-lg shadow-md hover:bg-red-600 hover:text-white transition-all border border-red-600/50"
+
             >
               {confirmDelete ? "Confirmar eliminación" : "Eliminar"}
             </button>
@@ -194,7 +199,7 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onD
                 onEdit();
                 closeModal();
               }}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-800 transition-all"
+              className="px-4 py-2 bg-white text-blue-600 rounded-lg shadow-md hover:bg-blue-800 hover:text-white transition-all border border-blue-600/50"
             >
               Editar
             </button>
@@ -203,13 +208,16 @@ export const TaskCard: React.FC<TaskCardProps> = React.memo(({ task, onEdit, onD
       </Modal>
 
       <label className="flex items-center gap-2 mt-4">
-        <input
-          type="checkbox"
-          checked={task.completed}
-          onChange={() => onToggleCompleted(task.id)}
-          className="form-checkbox h-6 w-6 text-green-500 rounded-full focus:ring-2 focus:ring-blue-500"
-          aria-label={`Marcar tarea como ${task.completed ? "pendiente" : "completada"}`}
-        />
+      <input
+  type="checkbox"
+  checked={task.completed}
+  onChange={() => onToggleCompleted(task.id)}
+  className={`form-checkbox h-5 w-5 text-white border-2 transition-all duration-300 ease-in-out 
+              ${task.completed ? 'bg-green-600 border-green-600' : 'bg-gray-300 border-gray-400'} 
+              rounded-full focus:ring-4 focus:ring-blue-400`}
+  aria-checked={task.completed}
+  aria-label={`Marcar tarea como ${task.completed ? "pendiente" : "completada"}`}
+/>
         <span className="text-sm">{task.completed ? "Tarea completada" : "Tarea pendiente"}</span>
       </label>
     </motion.div>
