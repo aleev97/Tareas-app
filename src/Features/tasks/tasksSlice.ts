@@ -27,11 +27,11 @@ const tasksSlice = createSlice({
     editTask: (state, action: PayloadAction<Task>) => {
       const index = state.tasks.findIndex((task) => task.id === action.payload.id);
       if (index !== -1) {
-        // Mantener la fecha de creación y la fecha límite si no se proporcionan
+        // Actualizar la fecha de creación al momento de editar
         state.tasks[index] = {
           ...action.payload,
-          createdAt: state.tasks[index].createdAt || action.payload.createdAt || new Date().toISOString(),
-          dueDate: state.tasks[index].dueDate || action.payload.dueDate || null, // Si no tiene, se asigna `null`
+          createdAt: new Date().toISOString(), // Siempre actualizar la fecha al editar
+          dueDate: action.payload.dueDate || null,
         };
       } else {
         state.tasks.push(action.payload);

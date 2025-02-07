@@ -29,6 +29,7 @@ export interface TaskEditProps {
         createdAt?: string;
         priority?: "baja" | "media" | "alta";
         dueDate?: string; // Added dueDate property
+        completed?: boolean;
     };
 
     onSave: () => void;
@@ -41,13 +42,12 @@ export interface TaskListProps {
 }
 
 export interface Task {
-
     id: string;
     content: string;
     priority: "alta" | "media" | "baja";
     createdAt: string;
     dueDate?: string | null;
-    completed: boolean;
+    completed?: boolean;
     color: string;
     font: string;
     textColor: string;

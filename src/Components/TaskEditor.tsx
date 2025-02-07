@@ -13,10 +13,9 @@ export const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCanc
     style: taskToEdit?.style || "common",
     image: taskToEdit?.image || undefined,
     priority: taskToEdit?.priority || "baja",
-    dueDate: taskToEdit?.dueDate || "", // Cambiado de tipo "date" a "datetime-local"
+    dueDate: taskToEdit?.dueDate || new Date().toISOString().slice(0, 16), // Formato correcto para datetime-local
+    completed: taskToEdit?.completed || false,
   });
-
-
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -26,19 +25,26 @@ export const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCanc
     setTask((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSave = () => {
+  const handleSave = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
+    
     if (!task.content.trim()) {
       alert("El contenido no puede estar vacío.");
       return;
     }
-
+  
     const newTask = {
       ...task,
       id: taskToEdit?.id || uuidv4(),
-      completed: false,
-      createdAt: taskToEdit?.createdAt || new Date().toISOString(),
+      completed: task.completed,
+      createdAt: taskToEdit 
+        ? new Date().toISOString() // Actualiza la fecha al editar
+        : new Date().toISOString(),
+      dueDate: task.dueDate || new Date().toISOString().slice(0, 16)
     };
-
+  
     if (taskToEdit) {
       dispatch(editTask(newTask));
     } else {
@@ -89,17 +95,21 @@ export const TaskEditor: React.FC<TaskEditProps> = ({ taskToEdit, onSave, onCanc
     }
   };
 
-  const handleCancel = () => {
+  const handleCancel = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
     setTask({
-      content: taskToEdit?.content || "",
-      color: taskToEdit?.color || "#ffffff",
-      font: taskToEdit?.font || "Arial",
-      textColor: taskToEdit?.textColor || "#000000",
-      style: taskToEdit?.style || "common",
-      image: taskToEdit?.image || undefined,
-      priority: taskToEdit?.priority || "baja",
-      dueDate: taskToEdit?.dueDate || "", // Restaurar la fecha si existe
-    });
+          content: taskToEdit?.content || "",
+          color: taskToEdit?.color || "#ffffff",
+          font: taskToEdit?.font || "Arial",
+          textColor: taskToEdit?.textColor || "#000000",
+          style: taskToEdit?.style || "common",
+          image: taskToEdit?.image || undefined,
+          priority: taskToEdit?.priority || "baja",
+          dueDate: taskToEdit?.dueDate || new Date().toISOString().slice(0, 16), // Formato correcto para datetime-local
+          completed: taskToEdit?.completed || false
+        });
     setImagePreview(null);
     onCancel();
   };
